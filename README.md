@@ -12,11 +12,6 @@ After setup is complete you will have three CoreOS virtual machines running on y
 
 2) Clone this project and get it running!
 
-```
-git clone https://github.com/coreos/coreos-vagrant/
-cd coreos-vagrant
-```
-
 3) Startup and SSH
 
 There are two "providers" for Vagrant with slightly different instructions.
