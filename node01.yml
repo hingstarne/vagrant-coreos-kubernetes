@@ -93,11 +93,13 @@ coreos:
         ExecStart=/usr/bin/wget -N -P /opt/bin http://storage.googleapis.com/kubernetes/kubecfg
         ExecStart=/usr/bin/wget -N -P /opt/bin http://storage.googleapis.com/kubernetes/kubelet
         ExecStart=/usr/bin/wget -N -P /opt/bin http://storage.googleapis.com/kubernetes/proxy
+        ExecStart=/usr/bin/wget -N -P /opt/bin http://storage.googleapis.com/kubernetes/scheduler
         ExecStart=/usr/bin/chmod +x /opt/bin/apiserver
         ExecStart=/usr/bin/chmod +x /opt/bin/controller-manager
         ExecStart=/usr/bin/chmod +x /opt/bin/kubecfg
         ExecStart=/usr/bin/chmod +x /opt/bin/kubelet
         ExecStart=/usr/bin/chmod +x /opt/bin/proxy
+        ExecStart=/usr/bin/chmod +x /opt/bin/scheduler
         RemainAfterExit=yes
         Type=oneshot
     - name: apiserver.service
@@ -167,6 +169,23 @@ coreos:
 
         [Service]
         ExecStart=/opt/bin/proxy --etcd_servers=http://127.0.0.1:4001 --logtostderr=true
+        Restart=always
+        RestartSec=2
+
+        [Install]
+        WantedBy=multi-user.target
+    - name: scheduler.service
+      command: start
+      content: |
+        [Unit]
+        ConditionFileIsExecutable=/opt/bin/scheduler
+        Description=Kubernetes Scheduler
+        Documentation=https://github.com/GoogleCloudPlatform/kubernetes
+
+        [Service]
+        ExecStart=/opt/bin/scheduler \
+        --master=127.0.0.1:8080 \
+        --logtostderr=true
         Restart=always
         RestartSec=2
 
